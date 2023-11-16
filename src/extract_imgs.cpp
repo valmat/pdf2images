@@ -48,13 +48,13 @@ int main(int argc, char* argv[])
         doc.to_images(
             pdfRenderer,
             cfg.out_dir,
+            progress_callback,
             cfg.pdf_render_fmt,
             cfg.pdf_render_pages_from,
             cfg.pdf_render_pages_limit,
             cfg.pdf_render_xres,
             cfg.pdf_render_yres,
-            cfg.pdf_render_dpi,
-            progress_callback
+            cfg.pdf_render_dpi
         );
     } catch (pdf::Error& err) {
         std::cerr << err.what() << std::endl; 
