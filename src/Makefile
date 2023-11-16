@@ -6,7 +6,7 @@ LD    = clang++
 CPP_STD  = c++20
 
 #compiler flags
-OPT_FLAG   = -pedantic -Wall -Wextra -Weffc++ -Wsequence-point -Wno-unused-parameter
+OPT_FLAG   = -pedantic -Wall -Wextra -Wsequence-point -Wno-unused-parameter
 
 INCL_LIBS = $(shell pkg-config --cflags poppler-cpp)
 
