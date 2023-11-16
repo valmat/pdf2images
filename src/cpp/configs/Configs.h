@@ -32,12 +32,12 @@ struct Configs
 
     Configs(int argc, char* argv[]) noexcept;
 
-    Configs()                              = default;
+    Configs()                           = default;
     Configs(const Configs &)            = default;
     Configs(Configs &&)                 = default;
     Configs &operator=(const Configs &) = default;
     Configs &operator=(Configs &&)      = default;
-    ~Configs()                             = default;
+    ~Configs()                          = default;
 private:
     // is arg parsing valid
     bool _valid = false;

@@ -11,28 +11,28 @@ int main(int argc, char* argv[])
 
     if(!pdf::Pdf::is_pdf_fext(cfg.inp_file)) {
         std::cerr << "File " << cfg.inp_file << " is not a pdf." << std::endl; 
-        return 1;
+        return 2;
     }
 
     pdf::Pdf doc(cfg.inp_file);
 
     if(!doc.is_valid()) {
         std::cerr << "Failed to read pdf file " << cfg.inp_file << std::endl; 
-        return 1;
+        return 3;
     }
 
     if(!doc.is_pdf()) {
         std::cerr << "File " << cfg.inp_file << " is not a pdf." << std::endl; 
-        return 1;
+        return 4;
     }    
 
     if (doc.is_locked()) {
         std::cerr << "Locked document " << cfg.inp_file << std::endl; 
-        return 1;
+        return 5;
     }
     if (doc.is_encrypted()) {
         std::cerr << "Encrypted document " << cfg.inp_file << std::endl; 
-        return 1;
+        return 6;
     }
 
     auto img_fmt = !cfg.bw ?
@@ -54,8 +54,7 @@ int main(int argc, char* argv[])
         );
     } catch (pdf::Error& err) {
         std::cerr << err.what() << std::endl; 
-        return 1;
-
+        return 7;
     }
 
     return 0;
