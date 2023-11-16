@@ -4,6 +4,7 @@ struct Configs
 {
     std::string inp_file;
     std::string out_dir = "./";
+    std::string out_file_prefix;
 
     // Pdf render images format
     std::string pdf_render_fmt = "png";

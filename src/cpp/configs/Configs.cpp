@@ -18,6 +18,9 @@ Configs::Configs(int argc, char* argv[]) noexcept
             "ext", {"-e", "--ext"},
             "Pdf render images format (default 'png'. Use 'png', 'jpg', 'tiff' etc)", 1
         },{
+            "pref", {"-p", "--pref"},
+            "Output files prefix", 1
+        },{
             "from", {"-f", "--from"},
             "The first page to render (default '1')", 1
         },{
@@ -53,7 +56,7 @@ Configs::Configs(int argc, char* argv[]) noexcept
         return;
     }
     if (args["help"]) {
-        std::cerr << args.program << " [options]" << std::endl;
+        std::cerr << args.program << " -i <input_file.pdf> [options]" << std::endl;
         std::cerr << argparser << std::endl;
         return;
     }
@@ -99,6 +102,9 @@ Configs::Configs(int argc, char* argv[]) noexcept
     }
     if(!!args["dpi"]) {
         pdf_render_dpi = args["dpi"].as<int>();
+    }
+    if(!!args["pref"]) {
+        out_file_prefix = args["pref"].as<std::string>();
     }
 
     _valid = true;

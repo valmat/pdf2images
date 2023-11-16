@@ -11,19 +11,19 @@ int main(int argc, char* argv[])
     }
 
     if(!pdf::Pdf::is_pdf_fext(cfg.inp_file)) {
-        std::cerr << "File " << cfg.inp_file << " is not a pdf." << std::endl; 
+        std::cerr << "File " << cfg.inp_file << " is not a PDF document." << std::endl; 
         return 2;
     }
 
     pdf::Pdf doc(cfg.inp_file);
 
     if(!doc.is_valid()) {
-        std::cerr << "Failed to read pdf file " << cfg.inp_file << std::endl; 
+        std::cerr << "Failed to read the PDF file " << cfg.inp_file << std::endl; 
         return 3;
     }
 
     if(!doc.is_pdf()) {
-        std::cerr << "File " << cfg.inp_file << " is not a pdf." << std::endl; 
+        std::cerr << "File " << cfg.inp_file << " is not a PDF document." << std::endl; 
         return 4;
     }    
 
@@ -41,13 +41,13 @@ int main(int argc, char* argv[])
         pdf::Renderer::img_formats::img_gray8;
 
     auto progress_callback = cfg.quiet ? nullptr : &progress_bar_update;
-    
+
     pdf::Renderer pdfRenderer(img_fmt);
 
     try {
         doc.to_images(
             pdfRenderer,
-            cfg.out_dir,
+            cfg.out_dir + cfg.out_file_prefix,
             progress_callback,
             cfg.pdf_render_fmt,
             cfg.pdf_render_pages_from,
