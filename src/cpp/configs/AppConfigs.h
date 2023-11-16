@@ -3,7 +3,7 @@
 struct AppConfigs
 {
     std::string inp_file;
-    std::string out_dir = ".";
+    std::string out_dir = "./";
 
     // Pdf render images format
     std::string pdf_render_fmt = "png";
@@ -16,7 +16,7 @@ struct AppConfigs
     // Pdf render yres
     uint pdf_render_yres = 150;
     // Pdf render dpi out (-1: system)
-    int pdf_render_dpi = 600;
+    int pdf_render_dpi = -1;
 
     bool bw = false;
 

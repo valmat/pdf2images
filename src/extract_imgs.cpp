@@ -11,57 +11,53 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    bool is_pdf = pdf::Pdf::is_pdf_fext(cfg.inp_file);
-    
-    if(!is_pdf) {
+    if(!pdf::Pdf::is_pdf_fext(cfg.inp_file)) {
         std::cerr << "File " << cfg.inp_file << " is not a pdf." << std::endl; 
         return 1;
     }
 
-    if(is_pdf) {
-        pdf::Pdf doc(cfg.inp_file);
+    pdf::Pdf doc(cfg.inp_file);
 
-        if(!doc.is_valid()) {
-            std::cerr << "Failed to read pdf file " << cfg.inp_file << std::endl; 
-            return 1;
-        }
+    if(!doc.is_valid()) {
+        std::cerr << "Failed to read pdf file " << cfg.inp_file << std::endl; 
+        return 1;
+    }
 
-        is_pdf = doc.is_pdf();
+    if(!doc.is_pdf()) {
+        std::cerr << "File " << cfg.inp_file << " is not a pdf." << std::endl; 
+        return 1;
+    }    
 
-        if(is_pdf) {
-            if (doc.is_locked()) {
-                std::cerr << "Locked document " << cfg.inp_file << std::endl; 
-                return 1;
-            }
-            if (doc.is_encrypted()) {
-                std::cerr << "Encrypted document " << cfg.inp_file << std::endl; 
-                return 1;
-            }
+    if (doc.is_locked()) {
+        std::cerr << "Locked document " << cfg.inp_file << std::endl; 
+        return 1;
+    }
+    if (doc.is_encrypted()) {
+        std::cerr << "Encrypted document " << cfg.inp_file << std::endl; 
+        return 1;
+    }
 
-            auto img_fmt = cfg.bw ?
-                pdf::Renderer::img_formats::img_rgb24 :
-                pdf::Renderer::img_formats::img_gray8;
-            
-            pdf::Renderer pdfRenderer(img_fmt);
+    auto img_fmt = !cfg.bw ?
+        pdf::Renderer::img_formats::img_rgb24 :
+        pdf::Renderer::img_formats::img_gray8;
+    
+    pdf::Renderer pdfRenderer(img_fmt);
 
+    try {
+        doc.to_images(
+            pdfRenderer,
+            cfg.out_dir,
+            cfg.pdf_render_fmt,
+            cfg.pdf_render_pages_from,
+            cfg.pdf_render_pages_limit,
+            cfg.pdf_render_xres,
+            cfg.pdf_render_yres,
+            cfg.pdf_render_dpi
+        );
+    } catch (pdf::Error& err) {
+        std::cerr << err.what() << std::endl; 
+        return 1;
 
-
-            try {
-                doc.to_images(
-                    pdfRenderer,
-                    cfg.out_dir,
-                    cfg.pdf_render_fmt,
-                    cfg.pdf_render_pages_limit,
-                    cfg.pdf_render_xres,
-                    cfg.pdf_render_yres,
-                    cfg.pdf_render_dpi
-                );
-            } catch (pdf::Error& err) {
-                std::cerr << err.what() << std::endl; 
-                return 1;
-
-            }
-        }
     }
 
     return 0;

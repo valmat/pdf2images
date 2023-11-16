@@ -5,6 +5,7 @@
 // Разрешаем создание неинициализированных объектов
 AppConfigs::AppConfigs(int argc, char* argv[]) noexcept
 {
+
     argagg::parser argparser {{
         {
             "help", {"-h", "--help"},
@@ -14,28 +15,28 @@ AppConfigs::AppConfigs(int argc, char* argv[]) noexcept
             "Input file", 1
         },{
             "out", {"-o", "--out", "--output"},
-            "Output directory (default '.')", 0
+            "Output directory (default '.')", 1
         },{
             "ext", {"-e", "--ext"},
-            "Pdf render images format (default 'png')", 0
+            "Pdf render images format (default 'png')", 1
         },{
             "from", {"-f", "--from"},
-            "The first page to render (default '1')", 0
+            "The first page to render (default '1')", 1
         },{
             "lim", {"-l", "--lim"},
-            "Pdf render pages limit (-1: no limits)", 0
+            "Pdf render pages limit (-1: no limits)", 1
         },{
             "xres", {"-x", "--xres"},
-            "X resolution file", 0
+            "X resolution file", 1
         },{
             "yres", {"-y", "--yres"},
-            "Y resolution", 0
+            "Y resolution", 1
         },{
             "dpi", {"-d", "--dpi"},
-            "Pdf render dpi out (-1: system)", 0
+            "Pdf render dpi out (-1: system)", 1
         },{
-            "bw", {"--bw"},
-            "Make black and white (default: off)", 0
+            "bw", {"-g","--bw", "--gray"},
+            "Make black and white render (default: off)", 0
         }
     }};
 
@@ -65,7 +66,7 @@ AppConfigs::AppConfigs(int argc, char* argv[]) noexcept
         std::cerr << "Input file name is empty." <<  std::endl; 
         return;
     }
-    if (!args["out"]) {
+    if (args["out"]) {
         out_dir = args["out"].as<std::string>();
         if(out_dir.empty()) {
             std::cerr << "Output directory name is empty." <<  std::endl; 
@@ -76,26 +77,38 @@ AppConfigs::AppConfigs(int argc, char* argv[]) noexcept
         }
     }
 
-    bw = args["bw"];
+    bw = !!args["bw"];
 
-    if(args["ext"]) {
+    if(!!args["ext"]) {
         pdf_render_fmt = args["ext"].as<std::string>();
     }
-    if(args["from"]) {
+    if(!!args["from"]) {
         pdf_render_pages_from = args["from"].as<int>();
     }
-    if(args["lim"]) {
+    if(!!args["lim"]) {
         pdf_render_pages_limit = args["lim"].as<int>();
     }
-    if(args["xres"]) {
+    if(!!args["xres"]) {
         pdf_render_xres = args["xres"].as<uint>();
     }
-    if(args["yres"]) {
+    if(!!args["yres"]) {
         pdf_render_yres = args["yres"].as<uint>();
     }
-    if(args["dpi"]) {
+    if(!!args["dpi"]) {
         pdf_render_dpi = args["dpi"].as<int>();
     }
+
+
+    std::cout << "inp_file :" << inp_file << std::endl;
+    std::cout << "out_dir :" << out_dir << std::endl;
+    std::cout << "pdf_render_fmt :" << pdf_render_fmt << std::endl;
+    std::cout << "pdf_render_pages_limit :" << pdf_render_pages_limit << std::endl;
+    std::cout << "pdf_render_pages_from :" << pdf_render_pages_from << std::endl;
+    std::cout << "pdf_render_xres :" << pdf_render_xres << std::endl;
+    std::cout << "pdf_render_yres :" << pdf_render_yres << std::endl;
+    std::cout << "pdf_render_dpi :" << pdf_render_dpi << std::endl;
+    std::cout << "bw :" << bw << std::endl;
+
     
     _valid = true;
 }

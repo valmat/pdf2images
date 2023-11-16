@@ -149,7 +149,6 @@ namespace pdf {
         return "undefined";
     }
 
-
     static std::string to_utf8(const poppler::ustring& x)
     {
         if(x.length()) {
@@ -200,6 +199,7 @@ namespace pdf {
         const Renderer& renderer,
         const std::string& to_file_prefix,
         const std::string& img_format,
+        int pages_from,
         int pages_limit,
         double xres,
         double yres,
@@ -210,12 +210,31 @@ namespace pdf {
         int h,
         Renderer::rotations rotate) const
     {
-        size_t pages_num = (pages_limit > 0) ?
-            std::min(static_cast<size_t>(pages_limit), _pages.size()) :
+        if(0 == pages_from) {
+            pages_from = 1;
+        }
+
+        size_t pages_first = (pages_from < 0) ?
+            static_cast<size_t>(_pages.size() + pages_from) :
+            static_cast<size_t>(pages_from - 1);
+
+        size_t pages_end = (pages_limit > 0) ?
+            std::min(static_cast<size_t>(pages_first + pages_limit), _pages.size()) :
             _pages.size();
 
-        for (size_t i = 0; i < pages_num; ++i) {
-            std::string to_file = to_file_prefix + std::to_string(i) + "." + img_format;
+        std::cout << "pages_first :" << pages_first << std::endl;
+        std::cout << "pages_end   :" << pages_end   << std::endl;
+        std::cout << "pages_limit :" << pages_limit << std::endl;
+
+        std::cout << "pages_from + pages_limit :" << (pages_first + pages_limit) << std::endl;
+        std::cout << "_pages.size() :" << _pages.size() << std::endl;
+        // std::cout << "pages_limit :" << pages_limit << std::endl;
+
+
+        for (size_t i = pages_first; i < pages_end; ++i) {
+            std::cout << "i :" << (i+1) << std::endl;
+
+            std::string to_file = to_file_prefix + std::to_string(i+1) + "." + img_format;
             renderer.renderer(_pages[i], to_file, img_format, xres, yres, dpi, x, y, w, h, rotate);
         }
     }

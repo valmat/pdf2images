@@ -63,6 +63,7 @@ namespace pdf {
             const Renderer& renderer,
             const std::string& to_file_prefix,
             const std::string& img_format = "png",
+            int pages_from = 1,
             int pages_limit = -1,
             double xres = 72.0,
             double yres = 72.0,
