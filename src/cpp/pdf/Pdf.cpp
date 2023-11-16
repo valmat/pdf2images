@@ -195,6 +195,7 @@ namespace pdf {
         double xres,
         double yres,
         int dpi,
+        std::function<void(uint, uint, uint)> progress_callback,
         int x,
         int y,
         int w,
@@ -216,6 +217,9 @@ namespace pdf {
         for (size_t i = pages_first; i < pages_end; ++i) {
             std::string to_file = to_file_prefix + std::to_string(i+1) + "." + img_format;
             renderer.renderer(_pages[i], to_file, img_format, xres, yres, dpi, x, y, w, h, rotate);
+            if(progress_callback != nullptr) {
+                progress_callback(i+1, pages_first+1, pages_end);
+            }
         }
     }
 

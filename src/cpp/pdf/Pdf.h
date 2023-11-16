@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 #include "Renderer.h"
 
 // Fiorward declaration
@@ -59,6 +60,7 @@ namespace pdf {
             double xres = 72.0,
             double yres = 72.0,
             int dpi = -1,
+            std::function<void(uint, uint, uint)> progress_callback = nullptr,
             int x = -1,
             int y = -1,
             int w = -1,

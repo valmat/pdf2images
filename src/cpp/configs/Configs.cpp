@@ -35,7 +35,11 @@ Configs::Configs(int argc, char* argv[]) noexcept
         },{
             "bw", {"-g","--bw", "--gray"},
             "Make black and white render (default: off)", 0
+        },{
+            "quiet", {"-q","--quiet"},
+            "Quiet mode", 0
         }
+
     }};
 
     argagg::parser_results args;
@@ -75,7 +79,8 @@ Configs::Configs(int argc, char* argv[]) noexcept
         }
     }
 
-    bw = !!args["bw"];
+    bw    = !!args["bw"];
+    quiet = !!args["quiet"];
 
     if(!!args["ext"]) {
         pdf_render_fmt = args["ext"].as<std::string>();

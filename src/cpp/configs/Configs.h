@@ -19,6 +19,7 @@ struct Configs
     int pdf_render_dpi = -1;
 
     bool bw = false;
+    bool quiet = false;
 
     // is arg parsing valid
     bool valid() const 
