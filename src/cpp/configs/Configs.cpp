@@ -16,7 +16,7 @@ Configs::Configs(int argc, char* argv[]) noexcept
             "Output directory (default '.')", 1
         },{
             "ext", {"-e", "--ext"},
-            "Pdf render images format (default 'png')", 1
+            "Pdf render images format (default 'png'. Use 'png', 'jpg', 'tiff' etc)", 1
         },{
             "from", {"-f", "--from"},
             "The first page to render (default '1')", 1
