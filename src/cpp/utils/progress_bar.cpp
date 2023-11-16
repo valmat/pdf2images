@@ -6,7 +6,9 @@ constexpr static uint progress_bar_width = 70;
 void progress_bar_update(uint current, uint first, uint last) noexcept
 {
     std::cout << "\r" << std::flush;
-    double progress = static_cast<double>(current - first) / (last - first);
+    double progress = (last > first) ?
+        static_cast<double>(current - first) / (last - first) :
+        1.0;
 
     uint pos = static_cast<uint>(progress_bar_width * progress);
     for (uint i = 0; i < progress_bar_width; ++i) {
