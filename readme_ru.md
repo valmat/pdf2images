@@ -41,7 +41,7 @@ make -j
 
 ```bash
 $bin/extract_imgs.bin -h
-bin/extract_imgs.bin [options]
+bin/extract_imgs.bin <input_file.pdf> [options]
     -h, --help
         Print help and exit
     -i, --inp, --input
@@ -50,6 +50,8 @@ bin/extract_imgs.bin [options]
         Output directory (default '.')
     -e, --ext
         Pdf render images format (default 'png'. Use 'png', 'jpg', 'tiff' etc)
+    -p, --pref
+        Output files prefix
     -f, --from
         The first page to render (default '1')
     -l, --lim
@@ -62,6 +64,8 @@ bin/extract_imgs.bin [options]
         Pdf render dpi out (-1: system)
     -g, --bw, --gray
         Make black and white render (default: off)
+    -q, --quiet
+        Quiet mode (don't use progressbar)
 ```
 
 Вы можете указать входной файл, каталог вывода, формат изображения, первую страницу для рендеринга, ограничение страниц для рендеринга, разрешение X и Y, DPI для вывода и опцию для рендеринга в черно-белом формате.

@@ -40,7 +40,7 @@ Configs::Configs(int argc, char* argv[]) noexcept
             "Make black and white render (default: off)", 0
         },{
             "quiet", {"-q","--quiet"},
-            "Quiet mode", 0
+            "Quiet mode (don't use progressbar)", 0
         }
 
     }};
