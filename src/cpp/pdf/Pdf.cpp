@@ -1,21 +1,12 @@
 #include <string>
 #include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <sstream>
 #include <filesystem>
-// #include <cstdio>
-
 #include "Pdf.h"
 
 #include <poppler-document.h>
 #include <poppler-page.h>
-// #include <poppler-toc.h>
 #include <poppler-page-renderer.h>
-
 #include <poppler-destination.h>
-// #include <poppler-embedded-file.h>
-// #include <poppler-font.h>
 #include <poppler-page.h>
 
 namespace fs = std::filesystem;
@@ -56,7 +47,7 @@ namespace pdf {
             copy(it, it_end, back_inserter(bytes));
             _doc = poppler::document::load_from_data(&bytes);
         }
-        // Если magic number проверен и удалось сосздать документ, считаем, что у нас PDF
+        // If magic number is checked and it was possible to create a document, we believe that we have a PDF
         _is_pdf = _doc;
         
         _init_pages();
@@ -222,18 +213,7 @@ namespace pdf {
             std::min(static_cast<size_t>(pages_first + pages_limit), _pages.size()) :
             _pages.size();
 
-        std::cout << "pages_first :" << pages_first << std::endl;
-        std::cout << "pages_end   :" << pages_end   << std::endl;
-        std::cout << "pages_limit :" << pages_limit << std::endl;
-
-        std::cout << "pages_from + pages_limit :" << (pages_first + pages_limit) << std::endl;
-        std::cout << "_pages.size() :" << _pages.size() << std::endl;
-        // std::cout << "pages_limit :" << pages_limit << std::endl;
-
-
         for (size_t i = pages_first; i < pages_end; ++i) {
-            std::cout << "i :" << (i+1) << std::endl;
-
             std::string to_file = to_file_prefix + std::to_string(i+1) + "." + img_format;
             renderer.renderer(_pages[i], to_file, img_format, xres, yres, dpi, x, y, w, h, rotate);
         }
@@ -276,6 +256,4 @@ namespace pdf {
 
         return result;
     }
-
-
 }

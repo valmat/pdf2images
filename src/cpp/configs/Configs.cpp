@@ -1,11 +1,9 @@
 #include <iostream>
-#include "AppConfigs.h"
+#include "Configs.h"
 #include "argagg/argagg.hpp"
 
-// Разрешаем создание неинициализированных объектов
-AppConfigs::AppConfigs(int argc, char* argv[]) noexcept
+Configs::Configs(int argc, char* argv[]) noexcept
 {
-
     argagg::parser argparser {{
         {
             "help", {"-h", "--help"},
@@ -98,17 +96,5 @@ AppConfigs::AppConfigs(int argc, char* argv[]) noexcept
         pdf_render_dpi = args["dpi"].as<int>();
     }
 
-
-    std::cout << "inp_file :" << inp_file << std::endl;
-    std::cout << "out_dir :" << out_dir << std::endl;
-    std::cout << "pdf_render_fmt :" << pdf_render_fmt << std::endl;
-    std::cout << "pdf_render_pages_limit :" << pdf_render_pages_limit << std::endl;
-    std::cout << "pdf_render_pages_from :" << pdf_render_pages_from << std::endl;
-    std::cout << "pdf_render_xres :" << pdf_render_xres << std::endl;
-    std::cout << "pdf_render_yres :" << pdf_render_yres << std::endl;
-    std::cout << "pdf_render_dpi :" << pdf_render_dpi << std::endl;
-    std::cout << "bw :" << bw << std::endl;
-
-    
     _valid = true;
 }

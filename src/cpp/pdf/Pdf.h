@@ -2,14 +2,6 @@
 
 #include <string>
 #include <vector>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
-#include "units.h"
 #include "Renderer.h"
 
 // Fiorward declaration
@@ -53,7 +45,6 @@ namespace pdf {
         std::string mode   () const noexcept;
         std::string layout () const noexcept;
 
-
         size_t pages_num() const noexcept { return _pages.size(); }
         std::vector<PdfPage> pages() const;
 
@@ -89,8 +80,6 @@ namespace pdf {
             Renderer::rotations rotate = Renderer::rotate_0) const;
 
         static bool is_pdf_fext(const std::string& file_name) noexcept;
-
-        // static Pdf load_from_data(std::string_view data) noexcept;
 
     private:
         void _init_pages() noexcept;

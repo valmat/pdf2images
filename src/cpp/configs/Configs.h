@@ -1,6 +1,6 @@
 #pragma once
 
-struct AppConfigs
+struct Configs
 {
     std::string inp_file;
     std::string out_dir = "./";
@@ -30,14 +30,14 @@ struct AppConfigs
         return _valid;
     }
 
-    AppConfigs(int argc, char* argv[]) noexcept;
+    Configs(int argc, char* argv[]) noexcept;
 
-    AppConfigs()                              = default;
-    AppConfigs(const AppConfigs &)            = default;
-    AppConfigs(AppConfigs &&)                 = default;
-    AppConfigs &operator=(const AppConfigs &) = default;
-    AppConfigs &operator=(AppConfigs &&)      = default;
-    ~AppConfigs()                             = default;
+    Configs()                              = default;
+    Configs(const Configs &)            = default;
+    Configs(Configs &&)                 = default;
+    Configs &operator=(const Configs &) = default;
+    Configs &operator=(Configs &&)      = default;
+    ~Configs()                             = default;
 private:
     // is arg parsing valid
     bool _valid = false;
