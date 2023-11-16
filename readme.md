@@ -20,7 +20,7 @@ or
 ```bash
 git clone https://github.com/valmat/pdf2images
 cd pdf2images
-git submodule update
+git submodule update --init --recursive
 ```
 
 Next, go to the src directory and compile the project:

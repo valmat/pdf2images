@@ -20,7 +20,7 @@ cd pdf2images
 ```bash
 git clone https://github.com/valmat/pdf2images
 cd pdf2images
-git submodule update
+git submodule update --init --recursive
 ```
 
 Далее, перейдите в каталог src и скомпилируйте проект:

@@ -1,6 +1,5 @@
 #include <string>
 #include <iostream>
-
 #include "progress_bar.h"
 
 constexpr static uint progress_bar_width = 70;
@@ -21,5 +20,10 @@ void progress_bar_update(uint current, uint first, uint last) noexcept
     }
     std::cout << " \033[1m\033[32m" << int(progress * 100.0) << "\033[0m%"
               << " (\033[1m\033[34m" << current << "\033[37m / \033[36m"
-              << first << "-" << last << "\033[0m)" << std::flush;
+              << first << "-" << last << "\033[0m)";
+
+    if (current == last) {
+        std::cout << std::endl;
+    }
+    std::cout << std::flush;
 }

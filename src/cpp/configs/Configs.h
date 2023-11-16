@@ -8,7 +8,7 @@ struct Configs
     // Pdf render images format
     std::string pdf_render_fmt = "png";
     // Pdf render pages limit (-1: no limits)
-    int pdf_render_pages_limit = 30;
+    int pdf_render_pages_limit = -1;
     // Pdf render the first page
     int pdf_render_pages_from = 1;
     // Pdf render xres

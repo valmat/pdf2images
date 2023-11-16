@@ -15,9 +15,7 @@ INCLUDES   = -I. -I"./cpp" -I"../deps/argagg/include" ${INCL_LIBS}
 CPP_FLAGS  = -std=${CPP_STD} ${OPT_FLAG} ${INCLUDES} -pthread
 LD_FLAGS   = -std=${CPP_STD} ${OPT_FLAG}
 
-LD_LIBS    = -pthread -lpthread      \
-	-Wl,-Bstatic -lz -ldl -lzbar -Wl,-Bdynamic     \
-	$(shell pkg-config --libs poppler-cpp)
+LD_LIBS = $(shell pkg-config --libs poppler-cpp)
 
 STRIPBIN = true
 version_color= \033[1;33m
@@ -29,6 +27,7 @@ ifeq ($(BUILD),release)
 	# "Release" build - optimization, and no debug symbols
 	# opt `-s` : Remove all symbol table and relocation information from the executable.
 	# https://gcc.gnu.org/onlinedocs/gcc/Link-Options.html#index-s
+	CPP_STD  = c++2a
 	OPT_FLAG += -O3 -DNDEBUG
 	CPP   = g++
 	LD    = g++
@@ -48,7 +47,7 @@ endif
 CPUS=$(shell nproc)
 MAKEFLAGS += --jobs=${CPUS}
 
-.PHONY: clean release pv cppcheck all
+.PHONY: clean release all
 
 EXECS_OBJ := $(patsubst ./%.cpp,o/%.o,$(EXECS_SRC))
 EXECS_BIN := $(patsubst o/%.o,bin/%.bin,$(EXECS_OBJ))
