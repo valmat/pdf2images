@@ -268,4 +268,44 @@ namespace pdf {
 
         return result;
     }
+
+    void Pdf::to_text(const std::string& output_file, int pages_from, int pages_limit) const
+    {
+        if (_pages.empty()) {
+            std::cerr << "No pages loaded." << std::endl;
+            return;
+        }
+
+        if (pages_from <= 0) {
+            pages_from = 1;
+        }
+
+        size_t pages_first = static_cast<size_t>(pages_from - 1);
+        size_t pages_end = (pages_limit > 0) ?
+            std::min(pages_first + static_cast<size_t>(pages_limit), _pages.size()) :
+            _pages.size();
+
+        std::ofstream out(output_file);
+        if (!out) {
+            std::cerr << "Failed to open output file: " << output_file << std::endl;
+            return;
+        }
+
+        // for (size_t i = pages_first; i < pages_end; ++i) {
+        //     auto page_text = to_utf8(_pages[i]->text());
+        //     out << "===== Page " << (i + 1) << " =====\n";
+        //     out << page_text << "\n\n";
+        // }
+
+        for (size_t i = pages_first; i < pages_end; ++i) {
+            auto page_text = to_utf8(_pages[i]->text());
+
+            // Удаляем символы 0x0c (Form Feed)
+            page_text.erase(std::remove(page_text.begin(), page_text.end(), '\f'), page_text.end());
+
+            out << "===== Page " << (i + 1) << " =====\n";
+            out << page_text << "\n\n";
+        }        
+    }
+
 }

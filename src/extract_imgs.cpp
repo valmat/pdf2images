@@ -38,6 +38,10 @@ int main(int argc, char* argv[])
             cfg.pdf_render_yres,
             cfg.pdf_render_dpi
         );
+
+    // XXX DBG
+    doc.to_text("./txt.txt", cfg.pdf_render_pages_from, cfg.pdf_render_pages_limit);
+
     } catch (pdf::Error& err) {
         std::cerr << err.what() << std::endl; 
         return 7;

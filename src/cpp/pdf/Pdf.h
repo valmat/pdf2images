@@ -82,6 +82,10 @@ namespace pdf {
             int h = -1,
             Renderer::rotations rotate = Renderer::rotate_0) const;
 
+        void to_text(const std::string& output_file,
+            int pages_from = 1,
+            int pages_limit = -1) const;
+
         static bool is_pdf_fext(const std::string& file_name) noexcept;
 
     private:
