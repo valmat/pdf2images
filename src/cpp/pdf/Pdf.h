@@ -1,11 +1,11 @@
 #pragma once
-
 #include <string>
+#include <memory>
 #include <vector>
 #include <functional>
 #include "Renderer.h"
 
-// Fiorward declaration
+// Forward declaration
 namespace poppler {
     class document;
     class page;
@@ -17,8 +17,9 @@ namespace pdf {
 
     class Pdf
     {
-        poppler::document* _doc = nullptr;
-        std::vector<poppler::page*> _pages;
+        std::unique_ptr<poppler::document, void(*)(poppler::document*)> _doc{nullptr, nullptr};
+        std::vector<std::unique_ptr<poppler::page, void(*)(poppler::page*)>> _pages;
+        
         bool _is_pdf   = false;
         bool _is_valid = false;
 
@@ -27,15 +28,15 @@ namespace pdf {
         constexpr static load_from_raw_t load_from_raw {};
 
         Pdf() = default;
-        ~Pdf();
+        ~Pdf() = default;
+
         Pdf(const std::string& file_name) noexcept;
         Pdf(std::string_view data, load_from_raw_t) noexcept;
 
-        Pdf(Pdf &&)                 = delete;
-        Pdf &operator=(Pdf &&)      = delete;
-        Pdf(const Pdf &)            = delete;
-        Pdf &operator=(const Pdf &) = delete;
-
+        Pdf(Pdf &&) noexcept            = default;
+        Pdf &operator=(Pdf &&) noexcept = default;
+        Pdf(const Pdf &)                = delete;
+        Pdf &operator=(const Pdf &)     = delete;
 
         bool is_pdf   () const noexcept { return _is_pdf;   }
         bool is_valid () const noexcept { return _is_valid; }

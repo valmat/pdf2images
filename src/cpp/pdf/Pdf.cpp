@@ -13,14 +13,6 @@ namespace fs = std::filesystem;
 
 namespace pdf {
 
-    Pdf::~Pdf()
-    {
-        for(poppler::page* page: _pages) {
-            delete page;
-        }
-        delete _doc;
-    }
-
     Pdf::Pdf(const std::string& file_name) noexcept
     {
         {
@@ -45,10 +37,12 @@ namespace pdf {
             auto it_end = std::istreambuf_iterator<char>();
 
             copy(it, it_end, back_inserter(bytes));
-            _doc = poppler::document::load_from_data(&bytes);
+            _doc = std::unique_ptr<poppler::document, void(*)(poppler::document*)>(
+                poppler::document::load_from_data(&bytes),
+                [](poppler::document* doc){ delete doc; }
+            );            
         }
-        // If magic number is checked and it was possible to create a document, we believe that we have a PDF
-        _is_pdf = _doc;
+        _is_pdf = _doc.get();
         
         _init_pages();
     }
@@ -62,8 +56,11 @@ namespace pdf {
         for (size_t i = 0; i < 4; ++i) {
             if(pdf_magic[i] != data[i]) {return;}
         }
-        _doc = poppler::document::load_from_raw_data(data.data(), data.size());
-        _is_pdf = _doc;
+        _doc = std::unique_ptr<poppler::document, void(*)(poppler::document*)>(
+            poppler::document::load_from_raw_data(data.data(), data.size()),
+            [](poppler::document* doc){ delete doc; }
+        );        
+        _is_pdf = _doc.get();
         
         _init_pages();
     }
@@ -76,11 +73,17 @@ namespace pdf {
         size_t pages_num = _doc->pages();
         _pages.reserve(pages_num);
         for (size_t i = 0; i < pages_num; ++i) {
-            _pages.emplace_back(_doc->create_page(i));
-            if(!_pages.back()) {
+            auto page_ptr = _doc->create_page(i);
+            if (!page_ptr) {
                 std::cerr << "Failed to create page " << i << std::endl;
                 return;
             }
+            _pages.emplace_back(
+                std::unique_ptr<poppler::page, void(*)(poppler::page*)>(
+                    page_ptr, 
+                    [](poppler::page* page){ delete page; }
+                )
+            );
         }
     }
 
@@ -155,7 +158,7 @@ namespace pdf {
         std::vector<PdfPage> result;
         result.reserve(_pages.size());
 
-        for (poppler::page* page: _pages) {
+        for (auto& page: _pages) {
             PdfPage pdfPage;
             pdfPage.text = to_utf8(page->text());
 
@@ -216,7 +219,7 @@ namespace pdf {
 
         for (size_t i = pages_first; i < pages_end; ++i) {
             std::string to_file = to_file_prefix + std::to_string(i+1) + "." + img_format;
-            renderer.renderer(_pages[i], to_file, img_format, xres, yres, dpi, x, y, w, h, rotate);
+            renderer.renderer(_pages[i].get(), to_file, img_format, xres, yres, dpi, x, y, w, h, rotate);
             if(progress_callback != nullptr) {
                 progress_callback(i+1, pages_first+1, pages_end);
             }
@@ -246,7 +249,7 @@ namespace pdf {
         result.reserve(pages_num);
         for (size_t i = 0; i < pages_num; ++i) {
             std::string to_file = to_file_prefix.native() + std::to_string(i) + "." + img_format;
-            renderer.renderer(_pages[i], to_file, img_format, xres, yres, dpi, x, y, w, h, rotate);
+            renderer.renderer(_pages[i].get(), to_file, img_format, xres, yres, dpi, x, y, w, h, rotate);
             {
                 std::ifstream file(to_file, std::ios::binary | std::ios::in);
                 if(!file) {
