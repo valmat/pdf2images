@@ -27,20 +27,20 @@ int main(int argc, char* argv[])
     pdf::Renderer pdfRenderer(img_fmt);
 
     try {
-        doc.to_images(
-            pdfRenderer,
-            cfg.out_dir + cfg.out_file_prefix,
-            progress_callback,
-            cfg.pdf_render_fmt,
-            cfg.pdf_render_pages_from,
-            cfg.pdf_render_pages_limit,
-            cfg.pdf_render_xres,
-            cfg.pdf_render_yres,
-            cfg.pdf_render_dpi
-        );
+        // doc.to_images(
+        //     pdfRenderer,
+        //     cfg.out_dir + cfg.out_file_prefix,
+        //     progress_callback,
+        //     cfg.pdf_render_fmt,
+        //     cfg.pdf_render_pages_from,
+        //     cfg.pdf_render_pages_limit,
+        //     cfg.pdf_render_xres,
+        //     cfg.pdf_render_yres,
+        //     cfg.pdf_render_dpi
+        // );
 
     // XXX DBG
-    doc.to_text("./txt.txt", cfg.pdf_render_pages_from, cfg.pdf_render_pages_limit);
+    doc.to_text("./txt.txt", progress_callback, cfg.pdf_render_pages_from, cfg.pdf_render_pages_limit);
 
     } catch (pdf::Error& err) {
         std::cerr << err.what() << std::endl; 

@@ -19,7 +19,7 @@ namespace pdf {
     {
         std::unique_ptr<poppler::document, void(*)(poppler::document*)> _doc{nullptr, nullptr};
         std::vector<std::unique_ptr<poppler::page, void(*)(poppler::page*)>> _pages;
-        
+
         bool _is_pdf   = false;
         bool _is_valid = false;
 
@@ -83,6 +83,7 @@ namespace pdf {
             Renderer::rotations rotate = Renderer::rotate_0) const;
 
         void to_text(const std::string& output_file,
+            std::function<void(uint, uint, uint)> progress_callback,
             int pages_from = 1,
             int pages_limit = -1) const;
 

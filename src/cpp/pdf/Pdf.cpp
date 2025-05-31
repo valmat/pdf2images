@@ -1,13 +1,12 @@
 #include <string>
 #include <algorithm>
 #include <filesystem>
-#include "Pdf.h"
-
 #include <poppler-document.h>
 #include <poppler-page.h>
 #include <poppler-page-renderer.h>
 #include <poppler-destination.h>
 #include <poppler-page.h>
+#include "Pdf.h"
 
 namespace fs = std::filesystem;
 
@@ -269,7 +268,13 @@ namespace pdf {
         return result;
     }
 
-    void Pdf::to_text(const std::string& output_file, int pages_from, int pages_limit) const
+
+
+    void Pdf::to_text(
+        const std::string& output_file,
+        std::function<void(uint, uint, uint)> progress_callback,
+        int pages_from,
+        int pages_limit) const
     {
         if (_pages.empty()) {
             std::cerr << "No pages loaded." << std::endl;
@@ -291,21 +296,19 @@ namespace pdf {
             return;
         }
 
-        // for (size_t i = pages_first; i < pages_end; ++i) {
-        //     auto page_text = to_utf8(_pages[i]->text());
-        //     out << "===== Page " << (i + 1) << " =====\n";
-        //     out << page_text << "\n\n";
-        // }
-
         for (size_t i = pages_first; i < pages_end; ++i) {
+            
             auto page_text = to_utf8(_pages[i]->text());
 
-            // Удаляем символы 0x0c (Form Feed)
+            // remove char 0x0c (Form Feed)
             page_text.erase(std::remove(page_text.begin(), page_text.end(), '\f'), page_text.end());
 
-            out << "===== Page " << (i + 1) << " =====\n";
+            out << "===== Page " << (i + 1)<< " =====\n";
             out << page_text << "\n\n";
+
+            if(progress_callback != nullptr) {
+                progress_callback(i+1, pages_first+1, pages_end);
+            }
         }        
     }
-
 }
