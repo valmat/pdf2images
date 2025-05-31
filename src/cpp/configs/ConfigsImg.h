@@ -1,6 +1,6 @@
 #pragma once
 
-struct Configs
+struct ConfigsImg final
 {
     std::string inp_file;
     std::string out_dir = "./";
@@ -32,14 +32,8 @@ struct Configs
         return _valid;
     }
 
-    Configs(int argc, char* argv[]) noexcept;
+    ConfigsImg(int argc, char* argv[]) noexcept;
 
-    Configs()                           = default;
-    Configs(const Configs &)            = default;
-    Configs(Configs &&)                 = default;
-    Configs &operator=(const Configs &) = default;
-    Configs &operator=(Configs &&)      = default;
-    ~Configs()                          = default;
 private:
     // is arg parsing valid
     bool _valid = false;

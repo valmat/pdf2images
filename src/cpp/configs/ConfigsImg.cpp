@@ -1,8 +1,8 @@
 #include <iostream>
-#include "Configs.h"
+#include "ConfigsImg.h"
 #include "argagg/argagg.hpp"
 
-Configs::Configs(int argc, char* argv[]) noexcept
+ConfigsImg::ConfigsImg(int argc, char* argv[]) noexcept
 {
     argagg::parser argparser {{
         {

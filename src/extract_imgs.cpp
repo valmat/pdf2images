@@ -1,12 +1,12 @@
 #include <iostream>
-#include "configs/Configs.h"
+#include "configs/ConfigsImg.h"
 #include "pdf/Pdf.h"
 #include "utils/check_create.h"
 #include "utils/progress_bar.h"
 
 int main(int argc, char* argv[])
 {
-    const Configs cfg(argc, argv);
+    const ConfigsImg cfg(argc, argv);
     if (!cfg) {
         return 1;
     }
