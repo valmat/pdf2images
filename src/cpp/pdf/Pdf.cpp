@@ -14,6 +14,8 @@ namespace fs = std::filesystem;
 namespace {
     void document_deleter(poppler::document* doc) { delete doc; }
     void page_deleter(poppler::page* page) { delete page; }
+    // Check pdf magic number (https://en.wikipedia.org/wiki/Magic_number_%28programming%29)
+    static constexpr char pdf_magic[4] = {'%', 'P', 'D', 'F'};    
 }
 
 namespace pdf {
@@ -29,8 +31,6 @@ namespace pdf {
             _is_valid = true;
             
             bytes.reserve(4);
-            // Check pdf magic number (https://en.wikipedia.org/wiki/Magic_number_%28programming%29)
-            const char pdf_magic[4] = {'%','P','D','F'};
             for (size_t i = 0; i < 4; ++i) {
                 char c;
                 if(!file.read(&c, 1) || pdf_magic[i] != c) {return;}
@@ -56,8 +56,8 @@ namespace pdf {
         _is_valid = !data.empty();
         if(data.size() < 4) return;
 
-        // Check pdf magic number
-        const char pdf_magic[4] = {'%','P','D','F'};
+
+
         for (size_t i = 0; i < 4; ++i) {
             if(pdf_magic[i] != data[i]) {return;}
         }
