@@ -1,6 +1,7 @@
 #include <iostream>
 #include "configs/Configs.h"
 #include "pdf/Pdf.h"
+#include "utils/check_create.h"
 #include "utils/progress_bar.h"
 
 int main(int argc, char* argv[])
@@ -10,30 +11,11 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    if(!pdf::Pdf::is_pdf_fext(cfg.inp_file)) {
-        std::cerr << "File " << cfg.inp_file << " is not a PDF document." << std::endl; 
-        return 2;
-    }
-
-    pdf::Pdf doc(cfg.inp_file);
-
-    if(!doc.is_valid()) {
-        std::cerr << "Failed to read the PDF file " << cfg.inp_file << std::endl; 
-        return 3;
-    }
-
-    if(!doc.is_pdf()) {
-        std::cerr << "File " << cfg.inp_file << " is not a PDF document." << std::endl; 
-        return 4;
-    }    
-
-    if (doc.is_locked()) {
-        std::cerr << "Locked document " << cfg.inp_file << std::endl; 
-        return 5;
-    }
-    if (doc.is_encrypted()) {
-        std::cerr << "Encrypted document " << cfg.inp_file << std::endl; 
-        return 6;
+    pdf::Pdf doc;
+    if(auto opt_doc = check_create(cfg.inp_file); opt_doc.has_value()) {
+        doc = std::move(opt_doc.value());
+    } else {
+        return 1;
     }
 
     auto img_fmt = !cfg.bw ?
