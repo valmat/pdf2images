@@ -15,6 +15,8 @@ namespace {
     void page_deleter(poppler::page* page) { delete page; }
     // Check pdf magic number (https://en.wikipedia.org/wiki/Magic_number_%28programming%29)
     static constexpr char pdf_magic[4] = {'%', 'P', 'D', 'F'};    
+
+    void progress_empty(uint, uint, uint) noexcept {}
 }
 
 namespace pdf {
@@ -24,7 +26,7 @@ namespace pdf {
         {
             std::vector<char> bytes;
             std::ifstream file(file_name, std::ios::in | std::ios::binary);
-            if(!file) {
+            if(!file) [[unlikely]] {
                 return;
             }
             _is_valid = true;
@@ -32,7 +34,7 @@ namespace pdf {
             bytes.reserve(4);
             for (size_t i = 0; i < 4; ++i) {
                 char c;
-                if(!file.read(&c, 1) || pdf_magic[i] != c) {return;}
+                if(!file.read(&c, 1) || pdf_magic[i] != c) [[unlikely]] {return;}
                 bytes.push_back(c);
             }
 
@@ -53,12 +55,10 @@ namespace pdf {
     Pdf::Pdf(std::string_view data, load_from_raw_t) noexcept
     {
         _is_valid = !data.empty();
-        if(data.size() < 4) return;
-
-
+        if(data.size() < 4) [[unlikely]] return;
 
         for (size_t i = 0; i < 4; ++i) {
-            if(pdf_magic[i] != data[i]) {return;}
+            if(pdf_magic[i] != data[i]) [[unlikely]] {return;}
         }
         _doc = std::unique_ptr<poppler::document, void(*)(poppler::document*)>(
             poppler::document::load_from_raw_data(data.data(), data.size()),
@@ -71,14 +71,14 @@ namespace pdf {
 
     void Pdf::_init_pages() noexcept
     {
-        if(!_doc) {return;}
+        if(!_doc) [[unlikely]] {return;}
 
         // Load pages
         size_t pages_num = _doc->pages();
         _pages.reserve(pages_num);
         for (size_t i = 0; i < pages_num; ++i) {
             auto page_ptr = _doc->create_page(i);
-            if (!page_ptr) {
+            if (!page_ptr) [[unlikely]] {
                 std::cerr << "Failed to create page " << i << std::endl;
                 return;
             }
@@ -93,16 +93,16 @@ namespace pdf {
 
     bool Pdf::is_pdf_fext(const std::string& file_name) noexcept
     {
-        if(file_name.size() < 4) {
+        if(file_name.size() < 4) [[unlikely]] {
             return false;
         }
-        if('.' != file_name[file_name.size() - 4]) {
+        if('.' != file_name[file_name.size() - 4]) [[unlikely]] {
             return false;
         }
         char fext_chars[] = {'p', 'd', 'f', 'P', 'D', 'F'};
         for (int i = 0; i < 3; ++i) {
             char c = file_name[file_name.size() - 3 + i];
-            if(fext_chars[i] != c && fext_chars[i + 3] != c) {
+            if(fext_chars[i] != c && fext_chars[i + 3] != c) [[unlikely]] {
                 return false;
             }            
         }
@@ -149,7 +149,7 @@ namespace pdf {
 
     static std::string to_utf8(const poppler::ustring& x)
     {
-        if(x.length()) {
+        if(x.length()) [[likely]] {
             poppler::byte_array buf = x.to_utf8();
             return std::string(buf.data(), buf.size());
         }
@@ -209,8 +209,12 @@ namespace pdf {
         int h,
         Renderer::rotations rotate) const
     {
-        if(0 == pages_from) {
+        if(0 == pages_from) [[unlikely]] {
             pages_from = 1;
+        }
+
+        if(progress_callback == nullptr) {
+            progress_callback = progress_empty;
         }
 
         size_t pages_first = (pages_from < 0) ?
@@ -224,9 +228,7 @@ namespace pdf {
         for (size_t i = pages_first; i < pages_end; ++i) {
             std::string to_file = to_file_prefix + std::to_string(i+1) + "." + img_format;
             renderer.renderer(_pages[i].get(), to_file, img_format, xres, yres, dpi, x, y, w, h, rotate);
-            if(progress_callback != nullptr) {
-                progress_callback(i+1, pages_first+1, pages_end);
-            }
+            progress_callback(i+1, pages_first+1, pages_end);
         }
     }
 
@@ -256,7 +258,7 @@ namespace pdf {
             renderer.renderer(_pages[i].get(), to_file, img_format, xres, yres, dpi, x, y, w, h, rotate);
             {
                 std::ifstream file(to_file, std::ios::binary | std::ios::in);
-                if(!file) {
+                if(!file) [[unlikely]] {
                     std::cerr << "Error loading image file "<< to_file << std::endl;
                     return {};
                 }
@@ -268,22 +270,24 @@ namespace pdf {
         return result;
     }
 
-
-
     void Pdf::to_text(
         const std::string& output_file,
         std::function<void(uint, uint, uint)> progress_callback,
         int pages_from,
         int pages_limit) const
     {
-        if (_pages.empty()) {
+        if (_pages.empty()) [[unlikely]] {
             std::cerr << "No pages loaded." << std::endl;
             return;
         }
 
-        if (pages_from <= 0) {
+        if (pages_from <= 0) [[unlikely]] {
             pages_from = 1;
         }
+
+        if(progress_callback == nullptr) {
+            progress_callback = progress_empty;
+        }        
 
         size_t pages_first = static_cast<size_t>(pages_from - 1);
         size_t pages_end = (pages_limit > 0) ?
@@ -291,7 +295,7 @@ namespace pdf {
             _pages.size();
 
         std::ofstream out(output_file);
-        if (!out) {
+        if (!out) [[unlikely]] {
             std::cerr << "Failed to open output file: " << output_file << std::endl;
             return;
         }
@@ -303,12 +307,10 @@ namespace pdf {
             // remove char 0x0c (Form Feed)
             page_text.erase(std::remove(page_text.begin(), page_text.end(), '\f'), page_text.end());
 
-            out << "===== Page " << (i + 1)<< " =====\n";
+            out << "========== " << (i + 1)<< " ==========\n";
             out << page_text << "\n\n";
 
-            if(progress_callback != nullptr) {
-                progress_callback(i+1, pages_first+1, pages_end);
-            }
+            progress_callback(i+1, pages_first+1, pages_end);
         }        
     }
 }
