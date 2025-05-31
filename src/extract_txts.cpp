@@ -18,26 +18,10 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-    auto img_fmt = !cfg.bw ?
-        pdf::Renderer::img_formats::img_rgb24 :
-        pdf::Renderer::img_formats::img_gray8;
-
     auto progress_callback = cfg.quiet ? nullptr : &progress_bar_update;
 
-    pdf::Renderer pdfRenderer(img_fmt);
-
     try {
-        doc.to_images(
-            pdfRenderer,
-            cfg.out_dir + cfg.out_file_prefix,
-            progress_callback,
-            cfg.pdf_render_fmt,
-            cfg.pdf_render_pages_from,
-            cfg.pdf_render_pages_limit,
-            cfg.pdf_render_xres,
-            cfg.pdf_render_yres,
-            cfg.pdf_render_dpi
-        );
+        doc.to_text("./txt.txt", progress_callback, cfg.pdf_render_pages_from, cfg.pdf_render_pages_limit);
 
     } catch (pdf::Error& err) {
         std::cerr << err.what() << std::endl; 
