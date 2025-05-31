@@ -11,6 +11,11 @@
 
 namespace fs = std::filesystem;
 
+namespace {
+    void document_deleter(poppler::document* doc) { delete doc; }
+    void page_deleter(poppler::page* page) { delete page; }
+}
+
 namespace pdf {
 
     Pdf::Pdf(const std::string& file_name) noexcept
@@ -28,8 +33,7 @@ namespace pdf {
             const char pdf_magic[4] = {'%','P','D','F'};
             for (size_t i = 0; i < 4; ++i) {
                 char c;
-                file.read(&c, 1);
-                if(pdf_magic[i] != c) {return;}
+                if(!file.read(&c, 1) || pdf_magic[i] != c) {return;}
                 bytes.push_back(c);
             }
 
@@ -39,10 +43,10 @@ namespace pdf {
             copy(it, it_end, back_inserter(bytes));
             _doc = std::unique_ptr<poppler::document, void(*)(poppler::document*)>(
                 poppler::document::load_from_data(&bytes),
-                [](poppler::document* doc){ delete doc; }
+                document_deleter
             );            
         }
-        _is_pdf = _doc.get();
+        _is_pdf = static_cast<bool>(_doc);
         
         _init_pages();
     }
@@ -50,7 +54,8 @@ namespace pdf {
     Pdf::Pdf(std::string_view data, load_from_raw_t) noexcept
     {
         _is_valid = !data.empty();
-        
+        if(data.size() < 4) return;
+
         // Check pdf magic number
         const char pdf_magic[4] = {'%','P','D','F'};
         for (size_t i = 0; i < 4; ++i) {
@@ -58,9 +63,9 @@ namespace pdf {
         }
         _doc = std::unique_ptr<poppler::document, void(*)(poppler::document*)>(
             poppler::document::load_from_raw_data(data.data(), data.size()),
-            [](poppler::document* doc){ delete doc; }
+            document_deleter
         );        
-        _is_pdf = _doc.get();
+        _is_pdf = static_cast<bool>(_doc);
         
         _init_pages();
     }
@@ -81,7 +86,7 @@ namespace pdf {
             _pages.emplace_back(
                 std::unique_ptr<poppler::page, void(*)(poppler::page*)>(
                     page_ptr, 
-                    [](poppler::page* page){ delete page; }
+                    page_deleter
                 )
             );
         }
