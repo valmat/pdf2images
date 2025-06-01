@@ -5,24 +5,24 @@
 
 namespace pdf {
     
-    struct TxtPos
+    struct TxtPos final
     {
         float left, top, right, bottom;
         int rotation;
     };    
-    struct TxtWord
+    struct TxtWord final
     {
         TxtPos pos;
         std::string word;
     };    
 
-    struct PdfPage
+    struct PdfPage final
     {
         std::string text;
         std::vector<TxtWord> words;
     };
 
-    struct PdfResult
+    struct PdfResult final
     {
         std::vector<PdfPage> pages;
         std::string layout;

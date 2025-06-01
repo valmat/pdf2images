@@ -15,7 +15,7 @@ namespace pdf {
 
     using file_buff_t = std::vector<char>;
 
-    class Pdf
+    class Pdf final
     {
         std::unique_ptr<poppler::document, void(*)(poppler::document*)> _doc{nullptr, nullptr};
         std::vector<std::unique_ptr<poppler::page, void(*)(poppler::page*)>> _pages;

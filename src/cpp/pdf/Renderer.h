@@ -21,7 +21,7 @@ namespace poppler {
 
 namespace pdf {
 
-    class Renderer
+    class Renderer final
     {
         poppler::page_renderer* _renderer = nullptr;
 

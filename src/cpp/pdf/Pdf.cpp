@@ -34,13 +34,7 @@ namespace {
         text.erase(std::remove(text.begin(), text.end(), '\f'), text.end());
     }
 
-
-    struct PageRange final
-    {
-        size_t first;
-        size_t last;
-    };
-    PageRange calculate_page_range(int pages_from, int pages_limit, size_t total_pages) noexcept
+    auto calculate_page_range(int pages_from, int pages_limit, size_t total_pages) noexcept
     {
         size_t first = (pages_from < 0) ?
             static_cast<size_t>(total_pages + pages_from) :
@@ -50,9 +44,8 @@ namespace {
             std::min(static_cast<size_t>(first + pages_limit), total_pages) :
             total_pages;
 
-        return {first, last};
+        return std::pair{first, last};
     }    
-
 }
 
 namespace pdf {
