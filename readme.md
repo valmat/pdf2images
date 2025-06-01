@@ -95,3 +95,7 @@ bin/extract_txts.bin -i <input_file.pdf> [options]
         Do not add a separator between pages (works only if saving to a single output file).
 
 ```
+
+## License
+
+Distributed under the [MIT License](LICENSE).
