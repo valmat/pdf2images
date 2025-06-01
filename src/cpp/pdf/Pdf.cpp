@@ -19,13 +19,10 @@ namespace {
     void progress_empty(uint, uint, uint) noexcept {}
 
 
-    void pagebreaker_simple(std::ofstream& out, size_t) noexcept
-    {
-        out << "\n\n";
-    }
+    void pagebreaker_simple(std::ofstream& out, size_t) noexcept {}
     void pagebreaker(std::ofstream& out, size_t page_no) noexcept
     {
-        out << "\n========== " << page_no << " ==========\n";
+        out << "========== " << page_no << " ==========\n";
     }
 
     void remove_form_feed(std::string& text) noexcept
@@ -40,11 +37,11 @@ namespace {
             static_cast<size_t>(total_pages + pages_from) :
             static_cast<size_t>(pages_from - 1);
 
-        size_t last = (pages_limit > 0) ?
+        size_t end = (pages_limit > 0) ?
             std::min(static_cast<size_t>(first + pages_limit), total_pages) :
             total_pages;
 
-        return std::pair{first, last};
+        return std::pair{first, end};
     }    
 }
 
@@ -322,10 +319,10 @@ namespace pdf {
             
             auto page_text = to_utf8(_pages[i]->text());
             remove_form_feed(page_text);
-            out << page_text;
+            out << page_text << std::flush;
 
             progress_callback(i+1, pages_first+1, pages_end);
-        }        
+        }
     }
     
     void Pdf::to_text(const std::string& output_file,
@@ -344,9 +341,8 @@ namespace pdf {
         }
 
         auto pagebreaker_f = nopagebreak ? pagebreaker_simple : pagebreaker;
-
         auto [pages_first, pages_end] = calculate_page_range(pages_from, pages_limit, _pages.size());
-
+        
         std::ofstream out(output_file);
         if (!out) [[unlikely]] {
             std::cerr << "Failed to open output file: " << output_file << std::endl;
@@ -356,14 +352,19 @@ namespace pdf {
         {
             auto page_text = to_utf8(_pages[pages_first]->text());
             remove_form_feed(page_text);
+            pagebreaker_f(out, pages_first + 1);
+            out << page_text;
             progress_callback(pages_first + 1, pages_first + 1, pages_end);
         }
         for (size_t i = pages_first + 1; i < pages_end; ++i) {
             auto page_text = to_utf8(_pages[i]->text());
             remove_form_feed(page_text);
-            out << page_text;
+            out << "\n\n";
             pagebreaker_f(out, i + 1);
+            out << page_text;
+            
             progress_callback(i + 1, pages_first + 1, pages_end);
-        }        
+        }
+        out << std::flush;
     }    
 }
