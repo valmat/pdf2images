@@ -8,7 +8,7 @@ struct ConfigsTxt final
     // Directory to save output files
     std::string out_dir{"./"};
     std::string out_file_prefix{""};
-    std::string out_file_postfix{""};
+    std::string out_file_postfix{".txt"};
 
     // Output file. If this is set, options for saving to a directory are ignored
     std::string out_file{};

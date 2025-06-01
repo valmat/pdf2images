@@ -280,7 +280,7 @@ namespace pdf {
         return result;
     }
 
-    /*
+    
     void Pdf::to_text(const std::string& output_dir,
         const std::string& out_prefix,
         const std::string& out_postfix,
@@ -306,27 +306,23 @@ namespace pdf {
             std::min(pages_first + static_cast<size_t>(pages_limit), _pages.size()) :
             _pages.size();
 
-        std::ofstream out(output_file);
-        if (!out) [[unlikely]] {
-            std::cerr << "Failed to open output file: " << output_file << std::endl;
-            return;
-        }
-
         for (size_t i = pages_first; i < pages_end; ++i) {
+            std::string output_file = output_dir + out_prefix + std::to_string(i+1) + out_postfix;
+            std::ofstream out(output_file);
+            if (!out) [[unlikely]] {
+                std::cerr << "Failed to open output file: " << output_file << std::endl;
+                return;
+            }
             
             auto page_text = to_utf8(_pages[i]->text());
-
             // remove char 0x0c (Form Feed)
             page_text.erase(std::remove(page_text.begin(), page_text.end(), '\f'), page_text.end());
-
-            out << "========== " << (i + 1)<< " ==========\n";
-            out << page_text << "\n\n";
+            out << page_text;
 
             progress_callback(i+1, pages_first+1, pages_end);
         }        
     }
-    */
-
+    
     void Pdf::to_text(const std::string& output_file,
         bool nopagebreak,
         std::function<void(uint, uint, uint)> progress_callback,

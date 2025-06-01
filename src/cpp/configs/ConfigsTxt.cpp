@@ -22,7 +22,7 @@ ConfigsTxt::ConfigsTxt(int argc, char* argv[]) noexcept
             "Output file name prefix. Used only when saving files to a directory.", 1
         },{
             "postfix", {"-P", "--post", "--postfix"},
-            "Output file name postfix. Used only when saving files to a directory.", 1
+            "Output file name postfix (default is '.txt'). Used only when saving files to a directory.", 1
         },{
             "from", {"-f", "--from"},
             "PDF: first page to extract (default is '1').", 1
