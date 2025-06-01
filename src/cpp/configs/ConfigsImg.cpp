@@ -7,7 +7,7 @@ ConfigsImg::ConfigsImg(int argc, char* argv[]) noexcept
     argagg::parser argparser {{
         {
             "help", {"-h", "--help"},
-            "Print help and exit", 0
+            "Show help information and exit.", 0
         },{
             "inp", {"-i", "--inp", "--input"},
             "Input file", 1

@@ -7,34 +7,34 @@ ConfigsTxt::ConfigsTxt(int argc, char* argv[]) noexcept
     argagg::parser argparser {{
         {
             "help", {"-h", "--help"},
-            "Print help and exit", 0
+            "Show help information and exit.", 0
         },{
             "inp", {"-i", "--inp", "--input"},
-            "Input PDF file (required)", 1
+            "Input PDF file (required).", 1
         },{
             "out-dir", {"-o", "--out-dir"},
-            "Output directory (default './')", 1
+            "Output directory (default is './').", 1
         },{
             "out-file", {"-O", "--out-file"},
-            "Output file name (if set, directory options are ignored)", 1
+            "Output file name (if set, directory options are ignored).", 1
         },{
-            "prefix", {"-p", "--prefix"},
-            "Output file name prefix", 1
+            "prefix", {"-p", "--pre", "--prefix"},
+            "Output file name prefix. Used only when saving files to a directory.", 1
         },{
-            "postfix", {"-P", "--postfix"},
-            "Output file name postfix", 1
+            "postfix", {"-P", "--post", "--postfix"},
+            "Output file name postfix. Used only when saving files to a directory.", 1
         },{
             "from", {"-f", "--from"},
-            "PDF: first page to extract (default '1')", 1
+            "PDF: first page to extract (default is '1').", 1
         },{
             "limit", {"-l", "--limit"},
-            "PDF: limit number of pages to extract (-1 means no limit)", 1
+            "PDF: maximum number of pages to extract (-1 means no limit).", 1
         },{
             "quiet", {"-q", "--quiet"},
-            "Quiet mode (no debug output)", 0
+            "Quiet mode (no progress will be shown).", 0
         },{
             "nopagebreak", {"-n", "--nopagebreak"},
-            "Do not add separator between pages (works only with single output file)", 0
+            "Do not add a separator between pages (works only if saving to a single output file).", 0
         }
     }};
 
@@ -107,8 +107,8 @@ ConfigsTxt::ConfigsTxt(int argc, char* argv[]) noexcept
         }
     }
 
-    quiet = args["quiet"];
-    nopagebreak = args["nopagebreak"];
+    quiet       = !!args["quiet"];
+    nopagebreak = !!args["nopagebreak"];
 
     _valid = true;
 }
