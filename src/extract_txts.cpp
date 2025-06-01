@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
     auto progress_callback = cfg.quiet ? nullptr : &progress_bar_update;
 
     try {
-        doc.to_text("./txt.txt", progress_callback, cfg.pdf_render_pages_from, cfg.pdf_render_pages_limit);
+        doc.to_text(cfg.out_file, cfg.nopagebreak, progress_callback, cfg.pdf_pages_from, cfg.pdf_pages_limit);
 
     } catch (pdf::Error& err) {
         std::cerr << err.what() << std::endl; 

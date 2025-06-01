@@ -82,7 +82,15 @@ namespace pdf {
             int h = -1,
             Renderer::rotations rotate = Renderer::rotate_0) const;
 
+        void to_text(const std::string& output_dir,
+            const std::string& out_prefix,
+            const std::string& out_postfix,
+            std::function<void(uint, uint, uint)> progress_callback,
+            int pages_from = 1,
+            int pages_limit = -1) const;
+
         void to_text(const std::string& output_file,
+            bool nopagebreak,
             std::function<void(uint, uint, uint)> progress_callback,
             int pages_from = 1,
             int pages_limit = -1) const;
